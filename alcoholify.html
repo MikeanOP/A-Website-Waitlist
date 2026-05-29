@@ -485,11 +485,12 @@ h2{
 .city-list{display:grid;gap:12px;margin-top:22px}
 .city-row{
   display:grid;
-  grid-template-columns:118px 1fr 86px;
+  grid-template-columns:118px 1fr 58px 86px;
   align-items:center;
   gap:12px;
   font-weight:1000;
 }
+.city-score{color:var(--olive);font-size:.86rem;text-align:right}
 .track{height:18px;border-radius:999px;background:rgba(97,119,36,.12);overflow:hidden}
 .fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--olive),var(--olive-3));box-shadow:0 8px 18px rgba(97,119,36,.22);transition:width .9s cubic-bezier(.2,.8,.2,1)}
 .city-row.leading .fill{background:linear-gradient(90deg,#53681d,var(--olive),#c7ce85);animation:barPulse 1.5s ease-in-out infinite}
@@ -704,7 +705,7 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
   .section-head,.interactive-grid,.founding{grid-template-columns:1fr}
   .problem-grid{grid-template-columns:1fr}
   .problem{min-height:178px;transform:none}
-  .city-row{grid-template-columns:96px 1fr 74px;font-size:.9rem}
+  .city-row{grid-template-columns:96px 1fr 48px 74px;font-size:.9rem}
   .phone-stage{grid-template-columns:1fr;min-height:auto;justify-items:center}
   .phone{width:min(86vw,310px)}
   .steps{width:100%}
@@ -717,6 +718,7 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
   .sticky .btn,.nav .btn{width:auto}
   .hero-title{letter-spacing:-.1em}
   .city-row{grid-template-columns:1fr;gap:8px}
+  .city-score{text-align:left}
   .vote{width:100%}
 }
 @media (prefers-reduced-motion:reduce){
@@ -767,15 +769,7 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
               <input class="field" name="name" autocomplete="name" placeholder="Your name" required>
               <input class="field" name="phone" autocomplete="tel" inputmode="tel" placeholder="Phone number" required>
               <div class="form-row">
-                <select class="field" name="city" required aria-label="City">
-                  <option value="">City</option>
-                  <option>Delhi</option>
-                  <option>Bangalore</option>
-                  <option>Mumbai</option>
-                  <option>Pune</option>
-                  <option>Chandigarh</option>
-                  <option>Hyderabad</option>
-                </select>
+                <input class="field" name="city" list="citySuggestions" autocomplete="address-level2" placeholder="City, e.g. Patiala" required>
                 <input class="field" name="drink" placeholder="Go-to bottle">
               </div>
               <button class="btn" type="submit">Get early access</button>
@@ -839,12 +833,14 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
           <p class="note">Tap your city to push it closer to launch. The first city to hit the goal gets priority access.</p>
         </div>
         <div class="city-list" id="cityList">
-          <div class="city-row" data-city="Delhi" data-score="88"><span>Delhi</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
-          <div class="city-row" data-city="Bangalore" data-score="76"><span>Bangalore</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
-          <div class="city-row" data-city="Mumbai" data-score="69"><span>Mumbai</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
-          <div class="city-row" data-city="Pune" data-score="58"><span>Pune</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
-          <div class="city-row" data-city="Chandigarh" data-score="51"><span>Chandigarh</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
-          <div class="city-row" data-city="Hyderabad" data-score="44"><span>Hyderabad</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Delhi" data-score="88" data-votes="0"><span>Delhi</span><div class="track"><div class="fill"></div></div><span class="city-score">88%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Bangalore" data-score="76" data-votes="0"><span>Bangalore</span><div class="track"><div class="fill"></div></div><span class="city-score">76%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Mumbai" data-score="69" data-votes="0"><span>Mumbai</span><div class="track"><div class="fill"></div></div><span class="city-score">69%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Pune" data-score="58" data-votes="0"><span>Pune</span><div class="track"><div class="fill"></div></div><span class="city-score">58%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Chandigarh" data-score="51" data-votes="0"><span>Chandigarh</span><div class="track"><div class="fill"></div></div><span class="city-score">51%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Hyderabad" data-score="44" data-votes="0"><span>Hyderabad</span><div class="track"><div class="fill"></div></div><span class="city-score">44%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Patiala" data-score="38" data-votes="0"><span>Patiala</span><div class="track"><div class="fill"></div></div><span class="city-score">38%</span><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Others" data-score="30" data-votes="0"><span>Others</span><div class="track"><div class="fill"></div></div><span class="city-score">30%</span><button class="vote" type="button">Vote</button></div>
         </div>
       </div>
     </section>
@@ -939,15 +935,7 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
         <h2>GET YOUR SPOT BEFORE YOUR CITY UNLOCKS</h2>
         <form class="waitlist-form" data-form>
           <input class="field" name="phone" autocomplete="tel" inputmode="tel" placeholder="Phone number" required>
-          <select class="field" name="city" required aria-label="City">
-            <option value="">City</option>
-            <option>Delhi</option>
-            <option>Bangalore</option>
-            <option>Mumbai</option>
-            <option>Pune</option>
-            <option>Chandigarh</option>
-            <option>Hyderabad</option>
-          </select>
+          <input class="field" name="city" list="citySuggestions" autocomplete="address-level2" placeholder="City, e.g. Patiala" required>
           <button class="btn" type="submit">Join the list</button>
         </form>
         <div class="success" data-success>
@@ -958,6 +946,16 @@ footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:8
       </div>
     </section>
   </main>
+
+  <datalist id="citySuggestions">
+    <option value="Delhi">
+    <option value="Bangalore">
+    <option value="Mumbai">
+    <option value="Pune">
+    <option value="Chandigarh">
+    <option value="Hyderabad">
+    <option value="Patiala">
+  </datalist>
 
   <div class="sticky">
     <span>Private beta list is moving.</span>
@@ -1112,7 +1110,11 @@ function applyStats(stats){
   if(Array.isArray(stats.cities)){
     stats.cities.forEach(item=>{
       const row=document.querySelector(`.city-row[data-city="${item.city}"]`);
-      if(row)row.dataset.score=String(item.score);
+      if(row){
+        const currentScore=Number(row.dataset.score || 0);
+        row.dataset.score=String(Math.max(currentScore,item.score || 0));
+        row.dataset.votes=String(item.count || 0);
+      }
     });
     paintCities();
   }
@@ -1209,32 +1211,39 @@ function paintCities(){
   rows.forEach(row=>{
     const score=Number(row.dataset.score);
     row.querySelector(".fill").style.width=`${score}%`;
-    row.querySelector(".vote").textContent=`${score}%`;
+    const scoreLabel=row.querySelector(".city-score");
+    if(scoreLabel){
+      const votes=Number(row.dataset.votes || 0);
+      scoreLabel.textContent=votes > 0 ? `${score}% · ${votes}` : `${score}%`;
+    }
     row.classList.toggle("leading",score===top);
   });
 }
 document.querySelectorAll(".city-row .vote").forEach(button=>{
   button.addEventListener("click",async event=>{
     const row=button.closest(".city-row");
-    if(localStorage.getItem(`cityVote:${row.dataset.city}`)){
-      showReceipt("Already counted",`${row.dataset.city} already has your boost on this device.`);
-      return;
-    }
+    const originalScore=Number(row.dataset.score || 0);
+    const originalVotes=Number(row.dataset.votes || 0);
     button.disabled=true;
-    row.dataset.score=Math.min(99,Number(row.dataset.score)+3);
+    row.dataset.score=Math.min(99,originalScore+5);
+    row.dataset.votes=String(originalVotes+1);
     paintCities();
     button.textContent="Voted";
     showReceipt("City boosted",`${row.dataset.city} moved closer to first launch.`);
     burstAt(event.clientX,event.clientY);
-    localStorage.setItem(`cityVote:${row.dataset.city}`,"1");
 
     const response=await apiRequest("vote",{city:row.dataset.city});
     if(response.ok)applyStats(response.data);
-    else showReceipt("Saved locally",`Add your Sheets URL to store ${row.dataset.city} votes permanently.`);
+    else {
+      row.dataset.score=String(originalScore);
+      row.dataset.votes=String(originalVotes);
+      paintCities();
+      showReceipt("Vote not saved",`Update and redeploy the Apps Script, then try ${row.dataset.city} again.`);
+    }
 
     setTimeout(()=>{
       button.disabled=false;
-      button.textContent=`${row.dataset.score}%`;
+      button.textContent="Vote";
     },850);
   });
 });

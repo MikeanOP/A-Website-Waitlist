@@ -13,7 +13,7 @@
 */
 
 const SHEET_ID = ""; // Optional when this script is bound to the target spreadsheet.
-const ALLOWED_CITIES = ["Delhi", "Bangalore", "Mumbai", "Pune", "Chandigarh", "Hyderabad"];
+const LEADERBOARD_CITIES = ["Delhi", "Bangalore", "Mumbai", "Pune", "Chandigarh", "Hyderabad", "Patiala", "Others"];
 const STARTING_TOTAL = 8421;
 
 const SHEETS = {
@@ -126,7 +126,7 @@ function signup_(params) {
 }
 
 function vote_(params) {
-  const city = cleanCity_(params.city);
+  const city = cleanVoteCity_(params.city);
   if (!city) throw new Error("Valid city is required.");
 
   getSheet_("votes").appendRow([
@@ -176,20 +176,20 @@ function stats_() {
   const voteRows = getRows_(getSheet_("votes"));
 
   const cityCounts = {};
-  ALLOWED_CITIES.forEach(city => cityCounts[city] = 0);
+  LEADERBOARD_CITIES.forEach(city => cityCounts[city] = 0);
 
   waitlistRows.forEach(row => {
-    const city = String(row[5] || "");
-    if (cityCounts[city] !== undefined) cityCounts[city] += 1;
+    const city = leaderboardCity_(row[5]);
+    cityCounts[city] += 1;
   });
 
   voteRows.forEach(row => {
-    const city = String(row[2] || "");
-    if (cityCounts[city] !== undefined) cityCounts[city] += 1;
+    const city = leaderboardCity_(row[2]);
+    cityCounts[city] += 1;
   });
 
   const max = Math.max(100, ...Object.values(cityCounts));
-  const cities = ALLOWED_CITIES.map(city => ({
+  const cities = LEADERBOARD_CITIES.map(city => ({
     city,
     count: cityCounts[city],
     score: Math.min(99, Math.max(12, Math.round((cityCounts[city] / max) * 99)))
@@ -284,8 +284,17 @@ function clean_(value, maxLength) {
 }
 
 function cleanCity_(value) {
-  const city = clean_(value, 40);
-  return ALLOWED_CITIES.indexOf(city) >= 0 ? city : "";
+  return clean_(value, 60);
+}
+
+function cleanVoteCity_(value) {
+  const city = clean_(value, 60);
+  return LEADERBOARD_CITIES.indexOf(city) >= 0 ? city : "";
+}
+
+function leaderboardCity_(value) {
+  const city = clean_(value, 60);
+  return LEADERBOARD_CITIES.indexOf(city) >= 0 ? city : "Others";
 }
 
 function normalizePhone_(value) {

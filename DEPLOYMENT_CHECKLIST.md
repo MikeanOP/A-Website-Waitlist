@@ -27,6 +27,8 @@ Follow this in order.
 https://script.google.com/macros/s/AKfycb.../exec
 ```
 
+If you already deployed before and later changed `google-sheets-backend.gs`, paste the updated code into Apps Script, click Save, then deploy a new version from `Deploy -> Manage deployments -> Edit -> Version -> New version -> Deploy`.
+
 ## 3. Connect the page
 
 In `alcoholify.html`, find:
