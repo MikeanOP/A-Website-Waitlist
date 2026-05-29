@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F7F1E4">
+<meta name="description" content="A coming-soon app for finding nearby liquor stores, live stock, and prices before leaving home. Join the waitlist.">
+<title>Coming Soon - Know Before You Go</title>
+<style>
+:root{
+  --paper:#F7F1E4;
+  --paper-2:#EFE5D1;
+  --paper-3:#FFF9EA;
+  --ink:#22262A;
+  --olive:#617724;
+  --olive-2:#7E922F;
+  --olive-3:#AAB46A;
+  --line:rgba(97,119,36,.28);
+  --muted:#6E6B5E;
+  --white:#FFFFFF;
+  --danger:#B4532D;
+  --shadow:0 24px 70px rgba(58,65,24,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{
+  min-height:100vh;
+  color:var(--ink);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 18% 10%,rgba(255,255,255,.92),transparent 24rem),
+    radial-gradient(circle at 84% 18%,rgba(126,146,47,.16),transparent 20rem),
+    linear-gradient(135deg,var(--paper-3),var(--paper) 48%,var(--paper-2));
+  overflow-x:hidden;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.22;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.38'/%3E%3C/svg%3E");
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    linear-gradient(90deg,rgba(97,119,36,.07) 1px,transparent 1px),
+    linear-gradient(rgba(97,119,36,.07) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),transparent 72%);
+}
+.spotlight{
+  position:fixed;
+  left:var(--mx,50%);
+  top:var(--my,38%);
+  width:360px;
+  height:360px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:2;
+  opacity:.42;
+  background:radial-gradient(circle,rgba(255,255,255,.84),rgba(170,180,106,.24) 35%,transparent 68%);
+  mix-blend-mode:soft-light;
+  transition:opacity .25s ease;
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.page{position:relative;overflow:hidden}
+.leaf{
+  position:absolute;
+  width:108px;
+  height:108px;
+  opacity:.54;
+  pointer-events:none;
+}
+.leaf::before,.leaf::after{
+  content:"";
+  position:absolute;
+  width:54px;
+  height:18px;
+  border:2px solid var(--olive);
+  border-left:0;
+  border-radius:0 100% 100% 0;
+  transform-origin:left center;
+}
+.leaf::before{transform:rotate(32deg);top:28px;left:18px}
+.leaf::after{transform:rotate(-28deg);top:58px;left:28px}
+.leaf.one{top:22px;right:20px;transform:rotate(16deg)}
+.leaf.two{left:-20px;bottom:50px;transform:rotate(-32deg)}
+.floaters{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.floater{
+  position:absolute;
+  color:rgba(97,119,36,.23);
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  animation:floatAcross 16s linear infinite;
+  white-space:nowrap;
+}
+.floater:nth-child(1){top:18%;left:-220px;animation-duration:18s}
+.floater:nth-child(2){top:54%;left:-260px;animation-duration:22s;animation-delay:-7s}
+.floater:nth-child(3){top:76%;left:-240px;animation-duration:20s;animation-delay:-12s}
+@keyframes floatAcross{to{transform:translateX(calc(100vw + 320px)) rotate(-2deg)}}
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:50;
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 clamp(16px,4vw,48px);
+  background:rgba(247,241,228,.76);
+  border-bottom:1px solid rgba(97,119,36,.16);
+  backdrop-filter:blur(18px);
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--olive);
+  font-weight:1000;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  font-size:.78rem;
+}
+.brand-mark{
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  color:var(--paper);
+  background:var(--olive);
+  border-radius:8px;
+  font-size:1.38rem;
+  font-weight:1000;
+  line-height:1;
+  box-shadow:0 12px 28px rgba(97,119,36,.28);
+}
+.nav-links{display:flex;gap:24px;align-items:center;color:var(--muted);font-size:.86rem;font-weight:900}
+.nav-links a:hover{color:var(--olive)}
+.btn{
+  min-height:52px;
+  border:0;
+  border-radius:999px;
+  padding:0 22px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  background:var(--olive);
+  color:var(--paper-3);
+  font-weight:1000;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  box-shadow:0 16px 36px rgba(97,119,36,.28),inset 0 -2px 0 rgba(0,0,0,.18);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.btn:hover{transform:translateY(-2px) rotate(-1deg);background:#53681d;box-shadow:0 20px 42px rgba(97,119,36,.34)}
+.btn:disabled,.vote:disabled{cursor:not-allowed;opacity:.68;transform:none}
+.btn.secondary{
+  background:rgba(255,255,255,.48);
+  color:var(--olive);
+  border:1px solid var(--line);
+  box-shadow:none;
+}
+.section{padding:86px clamp(16px,5vw,72px)}
+.shell{width:min(1160px,100%);margin:0 auto}
+.hero{
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  padding:88px clamp(16px,5vw,72px) 28px;
+  position:relative;
+}
+.hero-grid{
+  width:min(1180px,100%);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 380px;
+  gap:28px;
+  align-items:center;
+}
+.intro-line{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:18px;
+  width:min(920px,100%);
+  margin-bottom:14px;
+  color:var(--ink);
+  font-weight:1000;
+  letter-spacing:.58em;
+  text-indent:.58em;
+  text-transform:uppercase;
+  font-size:.78rem;
+}
+.intro-line::before,.intro-line::after{content:"";height:2px;background:var(--olive)}
+.hero-title{
+  color:var(--olive);
+  font-size:clamp(3.75rem,13.5vw,9.8rem);
+  line-height:.76;
+  letter-spacing:-.09em;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+.hero-title span{display:block}
+.hero-title span{
+  transform:translateY(18px);
+  opacity:0;
+  animation:titleIn .72s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.hero-title span:nth-child(2){animation-delay:.12s}
+.hero-title span:nth-child(3){animation-delay:.24s}
+@keyframes titleIn{to{transform:translateY(0);opacity:1}}
+.tagline{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:20px;
+  color:var(--ink);
+  font-size:clamp(1.3rem,3.2vw,2.35rem);
+  font-weight:1000;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.tagline::before,.tagline::after{content:"";height:2px;flex:1;background:var(--olive)}
+.hero-copy{
+  margin-top:26px;
+  max-width:520px;
+  font-size:clamp(1.05rem,2vw,1.22rem);
+  line-height:1.5;
+  color:var(--ink);
+  font-weight:750;
+}
+.hero-copy strong{color:var(--olive)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.stamp{
+  width:170px;
+  height:170px;
+  margin-top:28px;
+  border:3px solid var(--olive);
+  border-radius:50%;
+  color:var(--olive);
+  display:grid;
+  place-items:center;
+  text-align:center;
+  transform:rotate(-8deg);
+  font-weight:1000;
+  text-transform:uppercase;
+  box-shadow:inset 0 0 0 8px rgba(97,119,36,.08);
+  animation:wobble 4s ease-in-out infinite;
+}
+.stamp span{display:block;font-size:1.75rem;line-height:.92;letter-spacing:-.05em}
+.stamp small{display:block;margin-bottom:8px;font-size:.7rem;letter-spacing:.12em}
+@keyframes wobble{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(-5deg) scale(1.03)}}
+.teaser-card{
+  border:1px solid rgba(97,119,36,.24);
+  border-radius:28px;
+  background:rgba(255,255,255,.52);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(18px);
+  transform-style:preserve-3d;
+}
+.tilt{transition:transform .22s ease,box-shadow .22s ease}
+.tilt:hover{box-shadow:0 30px 76px rgba(58,65,24,.22)}
+.join-card{padding:18px;position:relative;overflow:hidden}
+.join-card::before{
+  content:"";
+  position:absolute;
+  inset:-35% -20% auto auto;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:rgba(126,146,47,.18);
+  filter:blur(10px);
+}
+.join-card>*{position:relative;z-index:1}
+.join-kicker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+  color:var(--olive);
+  font-size:.78rem;
+  font-weight:1000;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.live-dot{
+  width:10px;
+  height:10px;
+  background:var(--olive);
+  border-radius:999px;
+  box-shadow:0 0 0 rgba(97,119,36,.42);
+  animation:pulse 1.6s infinite;
+}
+@keyframes pulse{70%{box-shadow:0 0 0 11px rgba(97,119,36,0)}100%{box-shadow:0 0 0 0 rgba(97,119,36,0)}}
+.waitlist-form{display:grid;gap:10px}
+.field{
+  width:100%;
+  min-height:52px;
+  padding:0 14px;
+  border-radius:15px;
+  border:1px solid rgba(97,119,36,.24);
+  background:rgba(255,249,234,.78);
+  color:var(--ink);
+  outline:0;
+  font-weight:800;
+}
+.field::placeholder{color:rgba(34,38,42,.42)}
+.field:focus{border-color:var(--olive);box-shadow:0 0 0 4px rgba(97,119,36,.12)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.join-card .btn{width:100%}
+.success{
+  display:none;
+  padding:18px;
+  border-radius:20px;
+  border:1px dashed var(--olive);
+  background:rgba(97,119,36,.08);
+  color:var(--ink);
+  font-weight:800;
+}
+.success.show{display:block}
+.success strong{display:block;color:var(--olive);font-size:1.8rem;letter-spacing:-.04em;margin-bottom:6px}
+.counter-card{margin-top:14px;padding:15px;display:grid;gap:12px}
+.joined{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  color:var(--ink);
+  font-weight:1000;
+}
+.joined strong{color:var(--olive);font-size:1.7rem;letter-spacing:-.05em}
+.feed{
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-weight:800;
+  transition:opacity .24s ease,transform .24s ease;
+}
+.feed.switch{opacity:0;transform:translateY(8px)}
+.feed b{position:relative}
+.feed b::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-4px;
+  height:2px;
+  background:var(--olive);
+  transform-origin:left;
+  animation:feedUnderline 2.6s linear infinite;
+}
+@keyframes feedUnderline{from{transform:scaleX(0)}70%,to{transform:scaleX(1)}}
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:var(--paper);
+  background:var(--olive);
+  font-weight:1000;
+}
+.feed b{color:var(--ink)}
+.big-a-wrap{
+  position:absolute;
+  inset:auto 8% 5% auto;
+  width:min(38vw,420px);
+  aspect-ratio:1;
+  opacity:.11;
+  color:var(--olive);
+  font-size:min(36vw,440px);
+  font-weight:1000;
+  line-height:.76;
+  pointer-events:none;
+}
+.bottle-hole{
+  position:absolute;
+  left:50%;
+  top:38%;
+  width:10%;
+  height:22%;
+  transform:translateX(-50%);
+  background:var(--paper);
+  border-radius:22px 22px 12px 12px;
+}
+.brush{
+  margin:30px auto 0;
+  width:min(680px,100%);
+  min-height:82px;
+  display:grid;
+  place-items:center;
+  color:var(--paper-3);
+  background:var(--olive);
+  font-weight:1000;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-size:clamp(2rem,6vw,4rem);
+  clip-path:polygon(3% 12%,12% 5%,26% 10%,41% 4%,58% 9%,75% 3%,97% 14%,94% 86%,78% 93%,61% 87%,42% 96%,21% 88%,2% 94%);
+  background-image:linear-gradient(90deg,var(--olive),#7d8d35,var(--olive));
+  background-size:200% 100%;
+  animation:brushSheen 3.8s ease-in-out infinite;
+}
+@keyframes brushSheen{50%{background-position:100% 0}}
+.ticker{overflow:hidden;border-block:1px solid rgba(97,119,36,.2);background:rgba(255,255,255,.36)}
+.ticker-track{display:flex;width:max-content;animation:ticker 25s linear infinite}
+.ticker span{padding:15px 24px;color:var(--olive);font-weight:1000;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+@keyframes ticker{to{transform:translateX(-50%)}}
+.section-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,420px);
+  gap:28px;
+  align-items:end;
+  margin-bottom:30px;
+}
+.eyebrow{color:var(--olive);font-weight:1000;letter-spacing:.16em;text-transform:uppercase;font-size:.78rem;margin-bottom:10px}
+h2{
+  color:var(--ink);
+  font-size:clamp(2.25rem,6.5vw,5.4rem);
+  line-height:.86;
+  letter-spacing:-.07em;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+.note{color:var(--muted);line-height:1.55;font-size:1rem;font-weight:760}
+.interactive-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.finder{padding:20px}
+.finder-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.finder-top strong{font-size:1.05rem;color:var(--olive)}
+.pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--olive);font-weight:1000;font-size:.78rem;background:rgba(255,255,255,.48)}
+.search-row{display:grid;grid-template-columns:1fr 104px;gap:10px}
+.results{display:grid;gap:10px;margin-top:16px}
+.result-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,249,234,.72);
+  border:1px solid rgba(97,119,36,.18);
+  transform:translateY(0);
+  transition:transform .18s ease,background .18s ease;
+  animation:rowIn .34s ease both;
+}
+.result-row:nth-child(2){animation-delay:.06s}
+.result-row:nth-child(3){animation-delay:.12s}
+@keyframes rowIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.result-row:hover{transform:translateY(-3px);background:var(--paper-3)}
+.result-row b{display:block}.result-row small{color:var(--muted);font-weight:850}.price{color:var(--olive);font-weight:1000}
+.challenge{padding:20px;display:grid;gap:12px}
+.choice{
+  width:100%;
+  border:1px solid rgba(97,119,36,.2);
+  border-radius:18px;
+  background:rgba(255,255,255,.46);
+  padding:16px;
+  color:var(--ink);
+  text-align:left;
+  font-weight:1000;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.choice:hover,.choice.active{transform:translateX(6px);border-color:var(--olive);background:rgba(97,119,36,.1)}
+.choice small{display:block;margin-top:4px;color:var(--muted);font-weight:800}
+.leaderboard{padding:24px}
+.city-list{display:grid;gap:12px;margin-top:22px}
+.city-row{
+  display:grid;
+  grid-template-columns:118px 1fr 86px;
+  align-items:center;
+  gap:12px;
+  font-weight:1000;
+}
+.track{height:18px;border-radius:999px;background:rgba(97,119,36,.12);overflow:hidden}
+.fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--olive),var(--olive-3));box-shadow:0 8px 18px rgba(97,119,36,.22);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.city-row.leading .fill{background:linear-gradient(90deg,#53681d,var(--olive),#c7ce85);animation:barPulse 1.5s ease-in-out infinite}
+@keyframes barPulse{50%{filter:saturate(1.25) brightness(1.08)}}
+.vote{
+  border:1px solid var(--line);
+  color:var(--olive);
+  background:rgba(255,255,255,.54);
+  border-radius:999px;
+  min-height:38px;
+  font-weight:1000;
+}
+.vote:hover{background:var(--olive);color:var(--paper-3)}
+.problem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.problem{
+  min-height:238px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border-radius:28px;
+  border:1px solid rgba(97,119,36,.22);
+  background:rgba(255,255,255,.48);
+  box-shadow:0 16px 38px rgba(58,65,24,.1);
+  transform:rotate(var(--r));
+  transition:transform .22s ease,background .22s ease;
+}
+.problem:hover,.problem.active{transform:translateY(-8px) rotate(0);background:var(--paper-3)}
+.problem-num{color:var(--olive);font-weight:1000}
+.problem h3{font-size:1.82rem;line-height:.95;letter-spacing:-.055em;text-transform:uppercase}
+.problem p{color:var(--muted);font-weight:760;line-height:1.42}
+.phone-stage{
+  min-height:580px;
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:36px;
+  align-items:center;
+}
+.phone{
+  width:294px;
+  aspect-ratio:9/18.5;
+  padding:10px;
+  border-radius:38px;
+  background:linear-gradient(145deg,#30311e,#7d8d35);
+  box-shadow:0 26px 60px rgba(58,65,24,.28),inset 0 0 0 1px rgba(255,255,255,.24);
+  animation:float 4.8s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(1deg)}}
+.screen{
+  height:100%;
+  border-radius:30px;
+  overflow:hidden;
+  background:var(--paper-3);
+  border:1px solid rgba(255,255,255,.5);
+  padding:14px;
+}
+.notch{width:82px;height:22px;border-radius:0 0 14px 14px;background:#252a18;margin:-14px auto 12px}
+.screen-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.screen-tab{
+  border:1px solid rgba(97,119,36,.18);
+  border-radius:999px;
+  min-height:34px;
+  background:rgba(97,119,36,.08);
+  color:var(--olive);
+  font-size:.72rem;
+  font-weight:1000;
+}
+.screen-tab.active{background:var(--olive);color:var(--paper-3)}
+.app-view{display:none}.app-view.active{display:block}
+.app-card{padding:14px;border-radius:20px;background:rgba(97,119,36,.09);border:1px solid rgba(97,119,36,.18);margin-bottom:10px}
+.bottle-art{width:62px;height:136px;margin:14px auto;border-radius:18px 18px 10px 10px;background:linear-gradient(90deg,#202020,#555,#151515);position:relative}
+.bottle-art::before{content:"";position:absolute;left:20px;right:20px;top:-40px;height:48px;background:#202020;border-radius:9px 9px 4px 4px}
+.bottle-art::after{
+  content:"";
+  position:absolute;
+  inset:20px 12px auto;
+  height:34px;
+  border-radius:10px;
+  background:rgba(247,241,228,.86);
+  animation:labelPop 2.8s ease-in-out infinite;
+}
+@keyframes labelPop{50%{transform:scale(.94);opacity:.78}}
+.available{display:inline-block;margin-top:8px;padding:7px 9px;border-radius:999px;background:var(--olive);color:var(--paper-3);font-size:.78rem;font-weight:1000}
+.map{height:306px;border-radius:22px;background:linear-gradient(90deg,transparent 48%,rgba(97,119,36,.15) 49%,transparent 51%),linear-gradient(transparent 48%,rgba(97,119,36,.15) 49%,transparent 51%),#ede3cc;background-size:38px 38px;position:relative;overflow:hidden}
+.pin{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--olive);box-shadow:0 0 0 9px rgba(97,119,36,.15)}
+.pin.a{left:24%;top:34%}.pin.b{right:22%;top:22%}.pin.c{left:58%;bottom:26%}
+.mini-pop{position:absolute;left:18px;right:18px;bottom:16px;padding:13px;border-radius:18px;background:rgba(255,255,255,.9);font-weight:1000;color:var(--ink)}
+.steps{display:grid;gap:12px}
+.step{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.42);font-weight:850}
+.step span{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--olive);color:var(--paper-3);font-weight:1000;flex:0 0 auto}
+.meme{
+  padding:clamp(26px,6vw,62px);
+  overflow:hidden;
+  position:relative;
+}
+.meme::after{
+  content:"A";
+  position:absolute;
+  right:-20px;
+  bottom:-46px;
+  color:rgba(97,119,36,.08);
+  font-size:15rem;
+  line-height:.8;
+  font-weight:1000;
+}
+.quote{
+  display:inline-block;
+  margin-top:22px;
+  padding:14px 18px;
+  border:2px solid var(--olive);
+  color:var(--olive);
+  background:var(--paper-3);
+  border-radius:18px;
+  font-size:clamp(1.05rem,3vw,2rem);
+  font-weight:1000;
+  letter-spacing:-.04em;
+  transform:rotate(-2deg);
+}
+.later{
+  margin-top:28px;
+  color:var(--olive);
+  font-size:clamp(2.8rem,12vw,8.8rem);
+  line-height:.82;
+  letter-spacing:-.085em;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+.founding{
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:18px;
+  align-items:stretch;
+}
+.perks{display:grid;gap:12px}
+.perk{display:flex;gap:12px;align-items:center;padding:17px;border-radius:20px;background:rgba(255,255,255,.48);border:1px solid var(--line);font-weight:1000}
+.check{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:var(--olive);color:var(--paper-3);flex:0 0 auto}
+.final-panel{padding:24px;position:relative;overflow:hidden}
+.final-panel::before{content:"";position:absolute;inset:auto -12% -35% -12%;height:220px;background:radial-gradient(circle,rgba(97,119,36,.18),transparent 66%);filter:blur(18px)}
+.final-panel>*{position:relative;z-index:1}
+.final-panel .waitlist-form{margin-top:20px;grid-template-columns:1fr 180px 160px}
+.fine{margin-top:14px;color:var(--muted);font-size:.88rem;font-weight:800}
+.sticky{
+  display:none;
+  position:fixed;
+  left:12px;
+  right:12px;
+  bottom:12px;
+  z-index:60;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:22px;
+  background:rgba(247,241,228,.86);
+  border:1px solid rgba(97,119,36,.22);
+  backdrop-filter:blur(18px);
+  box-shadow:0 18px 45px rgba(58,65,24,.2);
+}
+.sticky span{flex:1;color:var(--olive);font-weight:1000;font-size:.88rem}
+.sticky .btn{min-height:44px;padding:0 16px;font-size:.78rem}
+.receipt{
+  position:fixed;
+  right:18px;
+  top:86px;
+  z-index:70;
+  width:min(310px,calc(100vw - 36px));
+  padding:14px 16px;
+  border:1px solid rgba(97,119,36,.26);
+  border-radius:18px;
+  color:var(--ink);
+  background:rgba(255,249,234,.9);
+  box-shadow:0 20px 48px rgba(58,65,24,.18);
+  backdrop-filter:blur(18px);
+  font-weight:850;
+  transform:translateY(-18px) scale(.96);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;
+}
+.receipt.show{opacity:1;transform:translateY(0) scale(1)}
+.receipt strong{display:block;color:var(--olive);font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.burst{
+  position:fixed;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--olive);
+  z-index:80;
+  pointer-events:none;
+  animation:burst .7s ease-out forwards;
+}
+@keyframes burst{to{transform:translate(var(--x),var(--y)) scale(.15);opacity:0}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+footer{padding:46px 20px 94px;text-align:center;color:var(--muted);font-weight:800}
+@media (max-width:920px){
+  .nav{height:62px}
+  .nav-links{display:none}
+  .brand span:last-child{display:none}
+  .hero{min-height:auto;padding-top:76px;place-items:start}
+  .hero-grid{grid-template-columns:1fr;gap:16px}
+  .intro-line{font-size:.66rem;letter-spacing:.32em;text-indent:.32em;margin-bottom:10px}
+  .hero-title{font-size:clamp(3.2rem,18vw,6.4rem)}
+  .tagline{font-size:1rem;letter-spacing:.1em;margin-top:12px}
+  .hero-copy{font-size:1rem;margin-top:16px}
+  .hero-actions,.stamp,.big-a-wrap{display:none}
+  .spotlight,.floaters{display:none}
+  .join-card{padding:14px;border-radius:22px}
+  .field{min-height:48px}
+  .counter-card{display:none}
+  .brush{min-height:58px;font-size:2rem;margin-top:14px}
+  .section{padding:62px 16px}
+  .section-head,.interactive-grid,.founding{grid-template-columns:1fr}
+  .problem-grid{grid-template-columns:1fr}
+  .problem{min-height:178px;transform:none}
+  .city-row{grid-template-columns:96px 1fr 74px;font-size:.9rem}
+  .phone-stage{grid-template-columns:1fr;min-height:auto;justify-items:center}
+  .phone{width:min(86vw,310px)}
+  .steps{width:100%}
+  .final-panel .waitlist-form{grid-template-columns:1fr}
+  .sticky{display:flex}
+}
+@media (max-width:520px){
+  .form-row,.search-row{grid-template-columns:1fr}
+  .waitlist-form .btn,.search-row .btn{width:100%}
+  .sticky .btn,.nav .btn{width:auto}
+  .hero-title{letter-spacing:-.1em}
+  .city-row{grid-template-columns:1fr;gap:8px}
+  .vote{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="spotlight" aria-hidden="true"></div>
+<div class="page">
+  <span class="leaf one"></span>
+  <span class="leaf two"></span>
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="brand" href="#top" aria-label="Coming soon home"><span class="brand-mark">A</span><span>Introducing soon</span></a>
+    <div class="nav-links">
+      <a href="#demo">Try the demo</a>
+      <a href="#cities">City race</a>
+      <a href="#perks">Perks</a>
+    </div>
+    <a class="btn" href="#waitlist">Join</a>
+  </nav>
+
+  <main id="top">
+    <section class="hero">
+      <div class="floaters" aria-hidden="true">
+        <span class="floater">live stock before leaving home</span>
+        <span class="floater">compare prices before the plan starts</span>
+        <span class="floater">your city unlocks when enough people join</span>
+      </div>
+      <div class="big-a-wrap" aria-hidden="true">A<span class="bottle-hole"></span></div>
+      <div class="hero-grid">
+        <div>
+          <div class="intro-line"><span>Introducing</span></div>
+          <h1 class="hero-title"><span>STOP VISITING</span><span>3 STORES</span><span>FOR 1 BOTTLE.</span></h1>
+          <div class="tagline">Know before you go.</div>
+          <p class="hero-copy">Find nearby stores. Check what is <strong>available</strong>. Compare the <strong>price</strong>. Leave home only when the bottle is actually there.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#waitlist">Join the waitlist</a>
+            <a class="btn secondary" href="#demo">Try the demo</a>
+          </div>
+          <div class="stamp"><div><small>Smarter choices</small><span>Drink<br>Better</span><small>Better nights</small></div></div>
+        </div>
+
+        <aside>
+          <div class="join-card teaser-card tilt" id="waitlist">
+            <div class="join-kicker"><span>Private beta list</span><span class="live-dot"></span></div>
+            <form class="waitlist-form" data-form>
+              <input class="field" name="name" autocomplete="name" placeholder="Your name" required>
+              <input class="field" name="phone" autocomplete="tel" inputmode="tel" placeholder="Phone number" required>
+              <div class="form-row">
+                <select class="field" name="city" required aria-label="City">
+                  <option value="">City</option>
+                  <option>Delhi</option>
+                  <option>Bangalore</option>
+                  <option>Mumbai</option>
+                  <option>Pune</option>
+                  <option>Chandigarh</option>
+                  <option>Hyderabad</option>
+                </select>
+                <input class="field" name="drink" placeholder="Go-to bottle">
+              </div>
+              <button class="btn" type="submit">Get early access</button>
+            </form>
+            <div class="success" data-success>
+              <strong>You are #8421 in line.</strong>
+              Invite friends to move up before your city unlocks.
+            </div>
+          </div>
+          <div class="counter-card teaser-card tilt">
+            <div class="joined"><span>People joined</span><strong id="joined">8,421</strong></div>
+            <div class="feed" id="feed"><span class="avatar">R</span><span><b>Rahul from Delhi</b><br>joined 18 seconds ago</span></div>
+          </div>
+        </aside>
+      </div>
+      <div class="brush">Coming soon</div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>Delhi is leading</span><span>+73 joined today</span><span>Find nearby stores</span><span>Check prices first</span><span>No more blind store hopping</span>
+        <span>Delhi is leading</span><span>+73 joined today</span><span>Find nearby stores</span><span>Check prices first</span><span>No more blind store hopping</span>
+      </div>
+    </div>
+
+    <section class="section reveal" id="demo">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tap around</p>
+            <h2>MAKE THE PROBLEM FEEL SOLVED</h2>
+          </div>
+          <p class="note">This page should not just tell people what is coming. It should let them feel the relief in ten seconds.</p>
+        </div>
+        <div class="interactive-grid">
+          <div class="finder teaser-card tilt">
+            <div class="finder-top"><strong>Live bottle finder</strong><span class="pill">Demo mode</span></div>
+            <div class="search-row">
+              <input class="field" id="bottleSearch" value="Jack Daniel's" aria-label="Search bottle">
+              <button class="btn" id="searchBtn" type="button">Search</button>
+            </div>
+            <div class="results" id="results"></div>
+          </div>
+          <div class="challenge teaser-card tilt">
+            <div class="finder-top"><strong>What ruined the plan?</strong><span class="pill" id="choiceState">Pick one</span></div>
+            <button class="choice active" type="button" data-choice="Out of stock"><span>Out of stock</span><small>The exact bottle exists everywhere except where you went.</small></button>
+            <button class="choice" type="button" data-choice="Closed store"><span>Closed store</span><small>Maps said open. The shutter said otherwise.</small></button>
+            <button class="choice" type="button" data-choice="Price shock"><span>Price shock</span><small>Same bottle. Different price. Zero warning.</small></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="cities">
+      <div class="shell leaderboard teaser-card tilt">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">City race</p>
+            <h2>WHICH CITY GETS IT FIRST?</h2>
+          </div>
+          <p class="note">Tap your city to push it closer to launch. The first city to hit the goal gets priority access.</p>
+        </div>
+        <div class="city-list" id="cityList">
+          <div class="city-row" data-city="Delhi" data-score="88"><span>Delhi</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Bangalore" data-score="76"><span>Bangalore</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Mumbai" data-score="69"><span>Mumbai</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Pune" data-score="58"><span>Pune</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Chandigarh" data-score="51"><span>Chandigarh</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+          <div class="city-row" data-city="Hyderabad" data-score="44"><span>Hyderabad</span><div class="track"><div class="fill"></div></div><button class="vote" type="button">Vote</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Friday night problems</p>
+            <h2>THE SIDE QUEST NOBODY ASKED FOR</h2>
+          </div>
+          <p class="note">Tap the cards. Every bad plan has the same villain: not knowing stock and price before leaving home.</p>
+        </div>
+        <div class="problem-grid">
+          <article class="problem active" style="--r:-2deg"><span class="problem-num">01</span><h3>You arrive.</h3><p>Out of stock. The confidence was fake.</p></article>
+          <article class="problem" style="--r:2deg"><span class="problem-num">02</span><h3>Second store.</h3><p>Closed. Somehow still listed as open.</p></article>
+          <article class="problem" style="--r:-1deg"><span class="problem-num">03</span><h3>Third store.</h3><p>Rs 300 more expensive than expected.</p></article>
+          <article class="problem" style="--r:2deg"><span class="problem-num">04</span><h3>You checked first.</h3><p>Nearby, available, best price. Done.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">App preview</p>
+            <h2>YOUR DRINK. YOUR CHOICE. YOUR WAY.</h2>
+          </div>
+          <p class="note">Switch the phone tabs. The product is simple: search the bottle, compare stores, pick the smarter stop.</p>
+        </div>
+        <div class="phone-stage">
+          <div class="phone" aria-label="App preview">
+            <div class="screen">
+              <div class="notch"></div>
+              <div class="screen-tabs">
+                <button class="screen-tab active" type="button" data-view="search">Search</button>
+                <button class="screen-tab" type="button" data-view="prices">Prices</button>
+                <button class="screen-tab" type="button" data-view="map">Map</button>
+              </div>
+              <div class="app-view active" id="view-search">
+                <div class="app-card"><strong>Jack Daniel's</strong><div class="bottle-art"></div><span class="available">Available nearby</span></div>
+              </div>
+              <div class="app-view" id="view-prices">
+                <div class="result-row"><span><b>Store A</b><small>0.8 km away</small></span><span class="price">Rs 2,140</span></div>
+                <div class="result-row"><span><b>Store B</b><small>1.2 km away</small></span><span class="price">Rs 2,260</span></div>
+                <div class="result-row"><span><b>Store C</b><small>2.4 km away</small></span><span class="price">Rs 2,440</span></div>
+              </div>
+              <div class="app-view" id="view-map">
+                <div class="map"><span class="pin a"></span><span class="pin b"></span><span class="pin c"></span><div class="mini-pop">3 nearby stores have it</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="steps">
+            <div class="step"><span>1</span><p>Find nearby stores instead of guessing where to go.</p></div>
+            <div class="step"><span>2</span><p>Check live stock before your group starts moving.</p></div>
+            <div class="step"><span>3</span><p>Compare prices and avoid the random premium.</p></div>
+            <div class="step"><span>4</span><p>Share your waitlist spot and move your city closer to launch.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="shell meme teaser-card tilt">
+        <p class="eyebrow">Screenshot material</p>
+        <h2>POV:<br>YOUR FRIEND SAID</h2>
+        <span class="quote">"I KNOW A SHOP NEARBY"</span>
+        <div class="later">45 minutes later...</div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="perks">
+      <div class="shell founding">
+        <div>
+          <p class="eyebrow">Founding members</p>
+          <h2>EARLY USERS GET THE GOOD STUFF</h2>
+          <p class="note" style="margin-top:18px">Only early users get these launch perks. No public name yet. No big reveal yet. Just the people who found it first.</p>
+        </div>
+        <div class="perks">
+          <div class="perk"><span class="check">✓</span>Early access</div>
+          <div class="perk"><span class="check">✓</span>Launch badge</div>
+          <div class="perk"><span class="check">✓</span>Priority city access</div>
+          <div class="perk"><span class="check">✓</span>Insider updates</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="shell final-panel teaser-card tilt">
+        <p class="eyebrow">Private waitlist</p>
+        <h2>GET YOUR SPOT BEFORE YOUR CITY UNLOCKS</h2>
+        <form class="waitlist-form" data-form>
+          <input class="field" name="phone" autocomplete="tel" inputmode="tel" placeholder="Phone number" required>
+          <select class="field" name="city" required aria-label="City">
+            <option value="">City</option>
+            <option>Delhi</option>
+            <option>Bangalore</option>
+            <option>Mumbai</option>
+            <option>Pune</option>
+            <option>Chandigarh</option>
+            <option>Hyderabad</option>
+          </select>
+          <button class="btn" type="submit">Join the list</button>
+        </form>
+        <div class="success" data-success>
+          <strong>You are #8421 in line.</strong>
+          Invite friends to move up before launch.
+        </div>
+        <p class="fine">For users 21+. This is a discovery platform for stores, stock, and prices. It is not an alcohol delivery service.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="sticky">
+    <span>Private beta list is moving.</span>
+    <a class="btn" href="#waitlist">Join</a>
+  </div>
+  <div class="receipt" id="receipt" aria-live="polite"></div>
+
+  <footer>Coming soon. Know before you go. Please drink responsibly.</footer>
+</div>
+
+<script>
+const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const receipt=document.getElementById("receipt");
+function showReceipt(title,message){
+  receipt.innerHTML=`<strong>${title}</strong>${message}`;
+  receipt.classList.add("show");
+  clearTimeout(showReceipt.timer);
+  showReceipt.timer=setTimeout(()=>receipt.classList.remove("show"),2400);
+}
+function burstAt(x,y){
+  if(reduceMotion)return;
+  for(let i=0;i<10;i++){
+    const dot=document.createElement("span");
+    dot.className="burst";
+    dot.style.left=`${x}px`;
+    dot.style.top=`${y}px`;
+    dot.style.setProperty("--x",`${Math.cos(i*.63)*Math.random()*86}px`);
+    dot.style.setProperty("--y",`${Math.sin(i*.63)*Math.random()*86}px`);
+    document.body.appendChild(dot);
+    setTimeout(()=>dot.remove(),760);
+  }
+}
+if(!reduceMotion){
+  window.addEventListener("pointermove",event=>{
+    document.documentElement.style.setProperty("--mx",`${event.clientX}px`);
+    document.documentElement.style.setProperty("--my",`${event.clientY}px`);
+  },{passive:true});
+
+  document.querySelectorAll(".tilt").forEach(card=>{
+    card.addEventListener("pointermove",event=>{
+      const rect=card.getBoundingClientRect();
+      const x=(event.clientX-rect.left)/rect.width-.5;
+      const y=(event.clientY-rect.top)/rect.height-.5;
+      card.style.transform=`rotateX(${(-y*5).toFixed(2)}deg) rotateY(${(x*5).toFixed(2)}deg) translateY(-2px)`;
+    });
+    card.addEventListener("pointerleave",()=>card.style.transform="");
+  });
+
+  window.addEventListener("scroll",()=>{
+    const y=window.scrollY;
+    document.querySelectorAll(".leaf").forEach((leaf,index)=>{
+      leaf.style.translate=`0 ${Math.sin(y/220+index)*14}px`;
+    });
+    const stamp=document.querySelector(".stamp");
+    if(stamp)stamp.style.translate=`0 ${Math.sin(y/180)*10}px`;
+  },{passive:true});
+}
+
+const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxat4G2u-9J4M4LstTMPvkt_UV1z6vG-FzAjEJ9PLRWQf0CAxAtYvnkJZmDKSz0vkbx/exec"; // Paste your Google Apps Script Web app URL here after deployment.
+const API_ENABLED = /^https:\/\/script\.google\.com\/macros\/s\//.test(SHEETS_WEB_APP_URL);
+const joined=document.getElementById("joined");
+let joinedCount=8421;
+let apiStats=null;
+let apiReady=false;
+let pendingAction=false;
+
+function apiRequest(action,payload={}){
+  if(!API_ENABLED)return Promise.resolve({ok:false,offline:true});
+
+  return new Promise(resolve=>{
+    const callbackName=`sheetCallback_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const script=document.createElement("script");
+    const params=new URLSearchParams({
+      action,
+      callback:callbackName,
+      source:"vercel-landing",
+      referrer:document.referrer || "",
+      userAgent:navigator.userAgent || "",
+      ...payload
+    });
+
+    window[callbackName]=response=>{
+      cleanup();
+      resolve(response);
+    };
+
+    function cleanup(){
+      delete window[callbackName];
+      script.remove();
+      clearTimeout(timer);
+    }
+
+    const timer=setTimeout(()=>{
+      cleanup();
+      resolve({ok:false,timeout:true});
+    },9000);
+
+    script.onerror=()=>{
+      cleanup();
+      resolve({ok:false,network:true});
+    };
+
+    script.src=`${SHEETS_WEB_APP_URL}?${params.toString()}`;
+    document.body.appendChild(script);
+  });
+}
+
+function formatNumber(value){
+  return Number(value || 0).toLocaleString("en-IN");
+}
+
+function setJoined(value){
+  joinedCount=Number(value || joinedCount);
+  joined.textContent=formatNumber(joinedCount);
+  document.querySelectorAll(".sticky span").forEach(item=>{
+    item.textContent=`${formatNumber(joinedCount)} joined. Private beta list is moving.`;
+  });
+}
+
+setInterval(()=>{
+  if(apiReady)return;
+  if(Math.random()>.45)setJoined(joinedCount+1);
+},2200);
+
+const feed=document.getElementById("feed");
+let feedItems=[
+  ["Rahul from Delhi","joined 18 seconds ago","R"],
+  ["Priya from Bangalore","joined 1 minute ago","P"],
+  ["Aman from Mumbai","voted for Mumbai","A"],
+  ["Simran from Chandigarh","joined 4 minutes ago","S"],
+  ["Kabir from Pune","searched single malt","K"],
+  ["Zoya from Hyderabad","joined 8 minutes ago","Z"]
+];
+let feedIndex=0;
+setInterval(()=>{
+  feedIndex=(feedIndex+1)%feedItems.length;
+  feed.classList.add("switch");
+  setTimeout(()=>{
+    const item=feedItems[feedIndex];
+    feed.innerHTML=`<span class="avatar">${item[2]}</span><span><b>${item[0]}</b><br>${item[1]}</span>`;
+    feed.classList.remove("switch");
+    if(Math.random()>.58)showReceipt("Live activity",`${item[0]} ${item[1]}.`);
+  },240);
+},2600);
+
+function applyStats(stats){
+  if(!stats)return;
+  apiStats=stats;
+  apiReady=true;
+  setJoined(stats.total);
+
+  if(Array.isArray(stats.cities)){
+    stats.cities.forEach(item=>{
+      const row=document.querySelector(`.city-row[data-city="${item.city}"]`);
+      if(row)row.dataset.score=String(item.score);
+    });
+    paintCities();
+  }
+
+  if(Array.isArray(stats.recent) && stats.recent.length){
+    feedItems=stats.recent.map(item=>{
+      const name=item.name || "Someone";
+      const city=item.city || "your city";
+      return [`${name} from ${city}`,item.action === "joined" ? "joined the private beta" : item.action, name.charAt(0).toUpperCase() || "A"];
+    });
+  }
+}
+
+async function refreshStats(){
+  const response=await apiRequest("stats");
+  if(response.ok)applyStats(response.data);
+}
+
+refreshStats();
+setInterval(refreshStats,30000);
+
+const sampleStores=[
+  ["L1 Market Store","0.8 km away","Rs 2,140"],
+  ["Sector Spirits","1.2 km away","Rs 2,260"],
+  ["The Bottle Stop","2.4 km away","Rs 2,440"]
+];
+const demoBottles=["Jack Daniel's","Old Monk","Absolut Vodka","Jameson","Greater Than Gin","Bira Gold"];
+let demoIndex=0;
+async function renderResults(notify=true,save=true){
+  const query=document.getElementById("bottleSearch").value.trim()||"Your bottle";
+  document.getElementById("results").innerHTML=sampleStores.map((store,index)=>`
+    <div class="result-row">
+      <span><b>${store[0]}</b><small>${query} available - ${store[1]}</small></span>
+      <span class="price">${index===0?"Best ":""}${store[2]}</span>
+    </div>
+  `).join("");
+  if(notify)showReceipt("Stock check",`${query} found at ${sampleStores.length} nearby stores.`);
+  if(save)apiRequest("search",{query});
+}
+renderResults(false);
+document.getElementById("searchBtn").addEventListener("click",event=>{
+  renderResults();
+  burstAt(event.clientX,event.clientY);
+});
+document.getElementById("bottleSearch").addEventListener("keydown",event=>{
+  if(event.key==="Enter"){event.preventDefault();renderResults();}
+});
+setInterval(()=>{
+  if(document.activeElement===document.getElementById("bottleSearch"))return;
+  demoIndex=(demoIndex+1)%demoBottles.length;
+  document.getElementById("bottleSearch").value=demoBottles[demoIndex];
+  renderResults(Math.random()>.35,false);
+},5200);
+
+document.querySelectorAll(".choice").forEach(button=>{
+  button.addEventListener("click",()=>{
+    document.querySelectorAll(".choice").forEach(item=>item.classList.remove("active"));
+    button.classList.add("active");
+    document.getElementById("choiceState").textContent=button.dataset.choice;
+    showReceipt("Problem logged",`${button.dataset.choice} is exactly why this needs to exist.`);
+    apiRequest("event",{eventName:"problem_choice",value:button.dataset.choice});
+  });
+});
+
+document.querySelectorAll(".problem").forEach(card=>{
+  card.addEventListener("click",()=>{
+    document.querySelectorAll(".problem").forEach(item=>item.classList.remove("active"));
+    card.classList.add("active");
+    const value=card.querySelector("h3").textContent;
+    showReceipt("Friday night file",value);
+    apiRequest("event",{eventName:"problem_card",value});
+  });
+});
+
+const phoneTabs=[...document.querySelectorAll(".screen-tab")];
+function activatePhoneTab(tab){
+    document.querySelectorAll(".screen-tab").forEach(item=>item.classList.remove("active"));
+    document.querySelectorAll(".app-view").forEach(item=>item.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(`view-${tab.dataset.view}`).classList.add("active");
+}
+phoneTabs.forEach(tab=>{
+  tab.addEventListener("click",()=>activatePhoneTab(tab));
+});
+let phoneIndex=0;
+setInterval(()=>{
+  phoneIndex=(phoneIndex+1)%phoneTabs.length;
+  activatePhoneTab(phoneTabs[phoneIndex]);
+},3600);
+
+function paintCities(){
+  const rows=[...document.querySelectorAll(".city-row")];
+  const top=Math.max(...rows.map(row=>Number(row.dataset.score)));
+  rows.forEach(row=>{
+    const score=Number(row.dataset.score);
+    row.querySelector(".fill").style.width=`${score}%`;
+    row.querySelector(".vote").textContent=`${score}%`;
+    row.classList.toggle("leading",score===top);
+  });
+}
+document.querySelectorAll(".city-row .vote").forEach(button=>{
+  button.addEventListener("click",async event=>{
+    const row=button.closest(".city-row");
+    if(localStorage.getItem(`cityVote:${row.dataset.city}`)){
+      showReceipt("Already counted",`${row.dataset.city} already has your boost on this device.`);
+      return;
+    }
+    button.disabled=true;
+    row.dataset.score=Math.min(99,Number(row.dataset.score)+3);
+    paintCities();
+    button.textContent="Voted";
+    showReceipt("City boosted",`${row.dataset.city} moved closer to first launch.`);
+    burstAt(event.clientX,event.clientY);
+    localStorage.setItem(`cityVote:${row.dataset.city}`,"1");
+
+    const response=await apiRequest("vote",{city:row.dataset.city});
+    if(response.ok)applyStats(response.data);
+    else showReceipt("Saved locally",`Add your Sheets URL to store ${row.dataset.city} votes permanently.`);
+
+    setTimeout(()=>{
+      button.disabled=false;
+      button.textContent=`${row.dataset.score}%`;
+    },850);
+  });
+});
+setInterval(()=>{
+  if(apiReady)return;
+  const rows=[...document.querySelectorAll(".city-row")];
+  if(!rows.length)return;
+  const row=rows[Math.floor(Math.random()*rows.length)];
+  row.dataset.score=Math.min(99,Number(row.dataset.score)+1);
+  paintCities();
+},4200);
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    entry.target.classList.add("show");
+    if(entry.target.querySelector(".city-list"))paintCities();
+  });
+},{threshold:.16});
+document.querySelectorAll(".reveal").forEach(item=>observer.observe(item));
+
+document.querySelectorAll("[data-form]").forEach(form=>{
+  form.addEventListener("submit",async event=>{
+    event.preventDefault();
+    if(pendingAction)return;
+    pendingAction=true;
+    const button=form.querySelector("button");
+    const originalText=button ? button.textContent : "";
+    if(button){
+      button.disabled=true;
+      button.textContent="Saving...";
+    }
+
+    const formData=new FormData(form);
+    const payload=Object.fromEntries(formData.entries());
+    payload.name=payload.name || "Private beta user";
+    payload.city=payload.city || "Delhi";
+
+    if(!payload.phone || String(payload.phone).replace(/\D/g,"").length<10){
+      showReceipt("Check phone", "Enter a valid phone number so your spot can be saved.");
+      if(button){
+        button.disabled=false;
+        button.textContent=originalText;
+      }
+      pendingAction=false;
+      return;
+    }
+
+    const response=await apiRequest("signup",payload);
+    let line=8421-Math.floor(Math.random()*110);
+    let permanent=false;
+
+    if(response.ok){
+      permanent=true;
+      const data=response.data || {};
+      line=data.position || line;
+      if(data.stats)applyStats(data.stats);
+      else if(data.total)setJoined(data.total);
+    }else{
+      setJoined(joinedCount+1);
+    }
+
+    const success=form.parentElement.querySelector("[data-success]");
+    form.style.display="none";
+    if(success){
+      success.querySelector("strong").textContent=`You are #${line.toLocaleString("en-IN")} in line.`;
+      success.classList.add("show");
+      showReceipt(permanent ? "Spot saved" : "Demo spot reserved", permanent ? `Saved to Google Sheets at #${line.toLocaleString("en-IN")}.` : "Paste the Apps Script URL to store signups permanently.");
+      burstAt(window.innerWidth/2,window.innerHeight-120);
+    }
+    pendingAction=false;
+  });
+});
+</script>
+</body>
+</html>
